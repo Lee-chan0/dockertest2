@@ -10,13 +10,18 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
+      - name: Checkout Repository
         uses: actions/checkout@v2
 
-      - name: Deploy to EC2
-        run: |
-          # EC2 인스턴스로 deploy.sh 전송
-          scp -i /path/to/docker2.pem deploy.sh ubuntu@43.201.163.114:~/deploy/
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
 
-          # EC2 인스턴스에서 deploy.sh 실행
-          ssh -i /path/to/docker2.pem ubuntu@43.201.163.114 "bash ~/deploy/deploy.sh"
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Deploy to EC2
+        run: ./deploy.sh
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
