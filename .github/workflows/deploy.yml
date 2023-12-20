@@ -1,0 +1,22 @@
+name: Deploy
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Deploy to EC2
+        run: |
+          # EC2 인스턴스로 deploy.sh 전송
+          scp -i /path/to/docker2.pem deploy.sh ubuntu@43.201.163.114:~/deploy/
+
+          # EC2 인스턴스에서 deploy.sh 실행
+          ssh -i /path/to/docker2.pem ubuntu@43.201.163.114 "bash ~/deploy/deploy.sh"
